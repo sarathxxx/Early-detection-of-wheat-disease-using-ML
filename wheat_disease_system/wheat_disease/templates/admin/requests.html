@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Disease Requests — Admin — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1><i class="fas fa-inbox"></i> Disease Submissions</h1><p class="page-sub">User-submitted disease reports for review</p></div>
+</div>
+<div class="section-card">
+  {% if requests %}
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>#</th><th>User</th><th>Image</th><th>Description</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr>
+          <td class="id-cell">{{ r.id }}</td>
+          <td><span class="user-tag">{{ r.uname or 'Unknown' }}</span></td>
+          <td>
+            {% if r.image_path %}
+            <img src="{{ url_for('static', filename='uploads/'+r.image_path) }}" class="thumb" alt=""/>
+            {% else %}—{% endif %}
+          </td>
+          <td class="truncate">{{ r.description[:80] if r.description else '—' }}{% if r.description and r.description|length>80 %}…{% endif %}</td>
+          <td>
+            <span class="status-badge status-{{ r.status }}">{{ r.status.title() }}</span>
+          </td>
+          <td class="date-cell">{{ r.created[:16] }}</td>
+          <td>
+            {% if r.status == 'pending' %}
+            <form method="POST" action="{{ url_for('admin_update_request', rid=r.id, action='approve') }}" style="display:inline">
+              <button class="btn-sm btn-approve"><i class="fas fa-check"></i> Approve</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin_update_request', rid=r.id, action='reject') }}" style="display:inline">
+              <button class="btn-sm btn-danger"><i class="fas fa-times"></i> Reject</button>
+            </form>
+            {% else %}
+            <span class="text-muted">Reviewed</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="empty-icon">📬</div><h3>No submissions yet</h3><p>User disease reports will appear here.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

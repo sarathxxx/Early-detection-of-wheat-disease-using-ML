@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Result — {{ info.name or pred.disease }} — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-chart-pie"></i> Detection Result</h1>
+    <p class="page-sub">
+      Analysis complete — {{ pred.created[:16] }}
+      {% if using_real_model %}
+        <span class="model-badge real"><i class="fas fa-brain"></i> Swin Transformer AI</span>
+      {% else %}
+        <span class="model-badge sim"><i class="fas fa-flask"></i> Simulation Mode</span>
+      {% endif %}
+    </p>
+  </div>
+  <div style="display:flex;gap:10px">
+    <a href="{{ url_for('predict') }}" class="btn-secondary"><i class="fas fa-redo"></i> New Scan</a>
+    <a href="{{ url_for('download_report', pred_id=pred.id) }}" class="btn-primary"><i class="fas fa-download"></i> PDF Report</a>
+  </div>
+</div>
+
+<div class="result-layout">
+  <div class="result-image-card">
+    <h3>Uploaded Image</h3>
+    <img src="{{ url_for('static', filename='uploads/' + pred.image_path) }}" alt="Wheat leaf" class="result-img"/>
+    <div class="img-meta">Scan ID: #{{ pred.id }}</div>
+  </div>
+
+  <div class="result-info">
+    <div class="diagnosis-card {% if pred.disease == 'healthy' %}card-healthy{% else %}card-disease{% endif %}">
+      <div class="diag-header">
+        <div class="diag-icon">
+          {% if pred.disease == 'healthy' %}✅
+          {% elif pred.disease in ['brown_rust','leaf_rust'] %}🟠
+          {% elif pred.disease in ['yellow_rust','stripe_rust'] %}🟡
+          {% elif pred.disease == 'fusarium' %}🔴
+          {% elif pred.disease == 'loose_smut' %}⚫
+          {% elif pred.disease == 'crown_root_rot' %}🟤
+          {% else %}⚠️{% endif %}
+        </div>
+        <div>
+          <div class="diag-label">Detected Disease</div>
+          <div class="diag-name">{{ info.name or pred.disease.replace('_',' ').title() }}</div>
+        </div>
+      </div>
+      <div class="diag-meta">
+        <div class="meta-item">
+          <span class="meta-label">Confidence</span>
+          <span class="meta-val conf-big">{{ "%.1f"|format(pred.confidence*100) }}%</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Severity</span>
+          <span class="severity-badge sev-{{ (pred.severity or 'medium').lower().replace(' ','') }}">{{ pred.severity or '—' }}</span>
+        </div>
+      </div>
+      <div class="conf-bar-big">
+        <div class="conf-fill-big" data-width="{{ (pred.confidence*100)|round|int }}"></div>
+      </div>
+    </div>
+
+    {% if info.description %}
+    <div class="info-block">
+      <h4><i class="fas fa-info-circle"></i> Overview</h4>
+      <p>{{ info.description }}</p>
+    </div>
+    {% endif %}
+
+    {% if info.symptoms %}
+    <div class="info-block">
+      <h4><i class="fas fa-search"></i> Why This Prediction — Observed Symptoms</h4>
+      <p class="symptoms-text">{{ info.symptoms }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="treatment-grid">
+  {% if info.treatment %}
+  <div class="treatment-card">
+    <div class="tc-header"><i class="fas fa-medkit"></i> Recommended Treatment</div>
+    <p>{{ info.treatment }}</p>
+  </div>
+  {% endif %}
+  {% if info.prevention %}
+  <div class="treatment-card prevention">
+    <div class="tc-header"><i class="fas fa-shield-alt"></i> Prevention Methods</div>
+    <p>{{ info.prevention }}</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- 9-class probability breakdown -->
+{% if prob_breakdown %}
+<div class="section-card">
+  <div class="section-card-header">
+    <h2><i class="fas fa-chart-bar"></i> AI Confidence Breakdown — All 9 Classes</h2>
+    <span class="badge-info">Swin Transformer output</span>
+  </div>
+  <div class="disease-probs">
+    {% for p in prob_breakdown %}
+    <div class="prob-row {{ 'prob-row-main' if p.is_main else '' }}">
+      <span class="prob-name">
+        {% if p.is_main %}<strong>{% endif %}
+        {{ p.name }}
+        {% if p.is_main %}</strong> ✓{% endif %}
+      </span>
+      <div class="prob-bar">
+        <div class="prob-fill {{ 'prob-main' if p.is_main else '' }}" style="width:{{ p.pct }}%"></div>
+      </div>
+      <span class="prob-pct {{ 'prob-pct-main' if p.is_main else '' }}">{{ p.pct }}%</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="result-actions">
+  <a href="{{ url_for('predict') }}" class="btn-secondary"><i class="fas fa-redo"></i> New Scan</a>
+  <a href="{{ url_for('history') }}" class="btn-secondary"><i class="fas fa-history"></i> View History</a>
+  <a href="{{ url_for('download_report', pred_id=pred.id) }}" class="btn-primary"><i class="fas fa-file-pdf"></i> Download PDF Report</a>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('.conf-fill-big').forEach(el => {
+  const w = el.dataset.width;
+  setTimeout(() => { el.style.transition='width .8s ease'; el.style.width = w + '%'; }, 100);
+});
+</script>
+{% endblock %}

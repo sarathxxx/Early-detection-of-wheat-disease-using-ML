@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Users — Admin — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1><i class="fas fa-users"></i> Manage Users</h1><p class="page-sub">{{ users|length }} registered users</p></div>
+</div>
+<div class="section-card">
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="id-cell">#{{ u.id }}</td>
+          <td><strong>{{ u.name }}</strong></td>
+          <td>{{ u.email }}</td>
+          <td><span class="role-badge role-{{ u.role }}">{{ u.role }}</span></td>
+          <td class="date-cell">{{ u.created[:10] }}</td>
+          <td>
+            {% if u.role != 'admin' %}
+            <form method="POST" action="{{ url_for('admin_delete_user', uid=u.id) }}" onsubmit="return confirm('Delete user {{ u.name }}?')">
+              <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+            {% else %}
+            <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

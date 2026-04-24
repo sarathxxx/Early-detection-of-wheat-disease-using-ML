@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+    <p class="page-sub">System overview and management</p>
+  </div>
+  <span class="admin-badge"><i class="fas fa-crown"></i> Administrator</span>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#e3f2fd;color:#1565c0"><i class="fas fa-users"></i></div>
+    <div class="stat-info"><span class="stat-num">{{ stats.total_users }}</span><span class="stat-label">Total Users</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#e8f5e9;color:#2d6a4f"><i class="fas fa-microscope"></i></div>
+    <div class="stat-info"><span class="stat-num">{{ stats.total_preds }}</span><span class="stat-label">Total Predictions</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fff3e0;color:#e65100"><i class="fas fa-disease"></i></div>
+    <div class="stat-info"><span class="stat-num">{{ stats.total_diseases }}</span><span class="stat-label">Disease Records</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fce4ec;color:#c62828"><i class="fas fa-inbox"></i></div>
+    <div class="stat-info"><span class="stat-num">{{ stats.pending_requests }}</span><span class="stat-label">Pending Requests</span></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#f3e5f5;color:#6a1b9a"><i class="fas fa-comments"></i></div>
+    <div class="stat-info"><span class="stat-num">{{ stats.total_feedback }}</span><span class="stat-label">Feedback Items</span></div>
+  </div>
+</div>
+
+<div class="admin-quick">
+  <a href="{{ url_for('admin_users') }}" class="aq-card"><i class="fas fa-users"></i><span>Manage Users</span></a>
+  <a href="{{ url_for('admin_diseases') }}" class="aq-card"><i class="fas fa-disease"></i><span>Manage Diseases</span></a>
+  <a href="{{ url_for('admin_predictions') }}" class="aq-card"><i class="fas fa-chart-bar"></i><span>All Predictions</span></a>
+  <a href="{{ url_for('admin_requests') }}" class="aq-card"><i class="fas fa-inbox"></i><span>Review Requests</span></a>
+  <a href="{{ url_for('admin_feedback') }}" class="aq-card"><i class="fas fa-comments"></i><span>View Feedback</span></a>
+  <a href="{{ url_for('admin_add_disease') }}" class="aq-card"><i class="fas fa-plus"></i><span>Add Disease</span></a>
+</div>
+
+<div class="section-card">
+  <div class="section-card-header">
+    <h2>Recent Predictions</h2>
+    <a href="{{ url_for('admin_predictions') }}" class="link-more">View All <i class="fas fa-arrow-right"></i></a>
+  </div>
+  {% if recent_preds %}
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>User</th><th>Image</th><th>Disease</th><th>Confidence</th><th>Severity</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for p in recent_preds %}
+        <tr>
+          <td><span class="user-tag">{{ p.uname or 'Unknown' }}</span></td>
+          <td><img src="{{ url_for('static', filename='uploads/'+p.image_path) }}" class="thumb" alt=""/></td>
+          <td><span class="disease-badge {{ p.disease }}">{{ p.disease.replace('_',' ').title() }}</span></td>
+          <td>
+            <div class="conf-bar"><div class="conf-fill" style="width:{{ (p.confidence*100)|round|int }}%"></div></div>
+            <span class="conf-pct">{{ "%.1f"|format(p.confidence*100) }}%</span>
+          </td>
+          <td><span class="severity-badge sev-{{ (p.severity or 'medium').lower().replace(' ','') }}">{{ p.severity or '—' }}</span></td>
+          <td class="date-cell">{{ p.created[:16] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="empty-icon">📊</div><p>No predictions yet.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

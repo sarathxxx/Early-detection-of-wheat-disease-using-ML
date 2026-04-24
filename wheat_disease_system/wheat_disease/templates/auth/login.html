@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Login — WheatAI{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-side">
+    <div class="auth-side-content">
+      <div class="auth-logo">🌾</div>
+      <h2>WheatAI</h2>
+      <p>AI-powered wheat disease detection for smart farmers.</p>
+      <div class="auth-features">
+        <div><i class="fas fa-check"></i> Instant disease detection</div>
+        <div><i class="fas fa-check"></i> Downloadable PDF reports</div>
+        <div><i class="fas fa-check"></i> Treatment recommendations</div>
+        <div><i class="fas fa-check"></i> Secure & private</div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <h1>Welcome Back</h1>
+      <p class="auth-subtitle">Log in to your WheatAI account</p>
+      <form method="POST">
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" name="email" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <input type="password" name="password" placeholder="Your password" required/>
+        </div>
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-sign-in-alt"></i> Log In
+        </button>
+      </form>
+      <div class="auth-alt">
+        Don't have an account? <a href="{{ url_for('signup') }}">Sign Up Free</a>
+      </div>
+      <div class="demo-creds">
+        <strong>Admin demo:</strong> admin@wheat.com / admin123
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

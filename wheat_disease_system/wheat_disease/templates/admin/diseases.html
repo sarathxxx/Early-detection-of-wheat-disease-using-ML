@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Diseases — Admin — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1><i class="fas fa-disease"></i> Disease Database</h1><p class="page-sub">{{ diseases|length }} disease records</p></div>
+  <a href="{{ url_for('admin_add_disease') }}" class="btn-primary"><i class="fas fa-plus"></i> Add Disease</a>
+</div>
+<div class="section-card">
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>Name</th><th>Code</th><th>Severity</th><th>Symptoms (preview)</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for d in diseases %}
+        <tr>
+          <td><strong>{{ d.name }}</strong></td>
+          <td><code>{{ d.code }}</code></td>
+          <td><span class="severity-badge sev-{{ (d.severity or 'medium').lower().replace(' ','') }}">{{ d.severity }}</span></td>
+          <td class="truncate">{{ d.symptoms[:80] if d.symptoms else '—' }}{% if d.symptoms and d.symptoms|length > 80 %}…{% endif %}</td>
+          <td>
+            <a href="{{ url_for('admin_edit_disease', did=d.id) }}" class="btn-sm btn-view"><i class="fas fa-edit"></i> Edit</a>
+            <form method="POST" action="{{ url_for('admin_delete_disease', did=d.id) }}" style="display:inline" onsubmit="return confirm('Delete {{ d.name }}?')">
+              <button type="submit" class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

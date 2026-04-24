@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>👋 Hello, {{ session.name }}!</h1>
+    <p class="page-sub">Here's your wheat disease detection overview.</p>
+  </div>
+  <a href="{{ url_for('predict') }}" class="btn-primary"><i class="fas fa-plus"></i> New Detection</a>
+</div>
+
+<!-- Stats row -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#e8f5e9;color:#2d6a4f"><i class="fas fa-microscope"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">{{ total }}</span>
+      <span class="stat-label">Total Scans</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fff3e0;color:#e65100"><i class="fas fa-chart-line"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">
+        {% if predictions %}{{ "%.0f"|format(predictions[0].confidence * 100) }}%{% else %}—{% endif %}
+      </span>
+      <span class="stat-label">Latest Confidence</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#e3f2fd;color:#1565c0"><i class="fas fa-leaf"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">6</span>
+      <span class="stat-label">Supported Diseases</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fce4ec;color:#c62828"><i class="fas fa-shield-alt"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">AI</span>
+      <span class="stat-label">Powered Detection</span>
+    </div>
+  </div>
+</div>
+
+<!-- Quick actions -->
+<div class="quick-actions">
+  <a href="{{ url_for('predict') }}" class="qa-card">
+    <i class="fas fa-upload"></i>
+    <span>Upload & Detect</span>
+  </a>
+  <a href="{{ url_for('history') }}" class="qa-card">
+    <i class="fas fa-history"></i>
+    <span>View History</span>
+  </a>
+  <a href="{{ url_for('diseases') }}" class="qa-card">
+    <i class="fas fa-book-medical"></i>
+    <span>Disease Library</span>
+  </a>
+  <a href="{{ url_for('submit_disease') }}" class="qa-card">
+    <i class="fas fa-plus-circle"></i>
+    <span>Report Disease</span>
+  </a>
+  <a href="{{ url_for('feedback') }}" class="qa-card">
+    <i class="fas fa-star"></i>
+    <span>Give Feedback</span>
+  </a>
+</div>
+
+<!-- Recent predictions -->
+<div class="section-card">
+  <div class="section-card-header">
+    <h2>Recent Detections</h2>
+    <a href="{{ url_for('history') }}" class="link-more">View All <i class="fas fa-arrow-right"></i></a>
+  </div>
+  {% if predictions %}
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr>
+          <th>Image</th><th>Disease</th><th>Confidence</th><th>Severity</th><th>Date</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in predictions %}
+        <tr>
+          <td>
+            <img src="{{ url_for('static', filename='uploads/' + p.image_path) }}"
+                 class="thumb" alt="wheat"/>
+          </td>
+          <td>
+            <span class="disease-badge {{ p.disease }}">{{ p.disease.replace('_',' ').title() }}</span>
+          </td>
+          <td>
+            <div class="conf-bar">
+              <div class="conf-fill" style="width:{{ (p.confidence*100)|round|int }}%"></div>
+            </div>
+            <span class="conf-pct">{{ "%.1f"|format(p.confidence*100) }}%</span>
+          </td>
+          <td><span class="severity-badge sev-{{ p.severity.lower().replace(' ','') if p.severity else 'medium' }}">{{ p.severity or '—' }}</span></td>
+          <td class="date-cell">{{ p.created[:16] }}</td>
+          <td>
+            <a href="{{ url_for('result', pred_id=p.id) }}" class="btn-sm btn-view"><i class="fas fa-eye"></i></a>
+            <a href="{{ url_for('download_report', pred_id=p.id) }}" class="btn-sm btn-dl"><i class="fas fa-download"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🌱</div>
+    <h3>No detections yet</h3>
+    <p>Upload your first wheat leaf image to get started.</p>
+    <a href="{{ url_for('predict') }}" class="btn-primary">Start Detection</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WheatAI – Disease Detection System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+</head>
+<body class="landing-body">
+
+<!-- HERO -->
+<nav class="land-nav">
+  <div class="land-brand"><span>🌾</span> WheatAI</div>
+  <div class="land-nav-links">
+    <a href="{{ url_for('login') }}">Log In</a>
+    <a href="{{ url_for('signup') }}" class="btn-primary-sm">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="hero-orb orb3"></div>
+    <div class="grain-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><span>🤖</span> AI-Powered Agriculture</div>
+    <h1 class="hero-title">Detect Wheat Diseases<br/><span class="hero-accent">Instantly.</span></h1>
+    <p class="hero-sub">Upload a photo of your wheat leaf and get instant disease diagnosis, treatment recommendations, and downloadable reports — powered by deep learning.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('signup') }}" class="btn-hero-primary"><i class="fas fa-seedling"></i> Start Free Detection</a>
+      <a href="{{ url_for('login') }}" class="btn-hero-secondary"><i class="fas fa-sign-in-alt"></i> Login</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-pill"><strong>6+</strong> Diseases</div>
+      <div class="stat-pill"><strong>AI</strong> Powered</div>
+      <div class="stat-pill"><strong>PDF</strong> Reports</div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-mockup">
+      <div class="phone-screen">
+        <div class="mock-header">🌾 WheatAI</div>
+        <div class="mock-img"><i class="fas fa-leaf"></i></div>
+        <div class="mock-result">
+          <div class="mock-tag healthy">✓ Healthy Wheat</div>
+          <div class="mock-conf">Confidence: 94.2%</div>
+        </div>
+        <div class="mock-bar"><div class="mock-fill" style="width:94%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="container">
+    <h2 class="section-title">Everything You Need</h2>
+    <p class="section-sub">A complete disease management platform for modern farmers</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#e8f5e9;color:#2d6a4f"><i class="fas fa-brain"></i></div>
+        <h3>AI Detection</h3>
+        <p>MobileNetV2-powered model identifies 6 wheat diseases with high accuracy from leaf images.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#fff3e0;color:#e65100"><i class="fas fa-file-medical-alt"></i></div>
+        <h3>Smart Reports</h3>
+        <p>Download detailed PDF reports with diagnosis, treatment steps, and prevention tips.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#e3f2fd;color:#1565c0"><i class="fas fa-lightbulb"></i></div>
+        <h3>Explainability</h3>
+        <p>Understand why a prediction was made with symptom-based rule explanations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#fce4ec;color:#c62828"><i class="fas fa-history"></i></div>
+        <h3>Prediction History</h3>
+        <p>Track all your scans in one place with date-stamped history and confidence scores.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#f3e5f5;color:#6a1b9a"><i class="fas fa-shield-alt"></i></div>
+        <h3>Secure & Private</h3>
+        <p>Your images and data are securely stored. Password-protected accounts with role management.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:#e8eaf6;color:#283593"><i class="fas fa-cogs"></i></div>
+        <h3>Admin Control</h3>
+        <p>Full admin panel to manage users, diseases database, user submissions, and feedback.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISEASES -->
+<section class="diseases-preview">
+  <div class="container">
+    <h2 class="section-title">Detectable Diseases</h2>
+    <div class="disease-pills">
+      <span class="dp dp-healthy">✓ Healthy Wheat</span>
+      <span class="dp dp-rust">🟠 Brown Rust</span>
+      <span class="dp dp-yellow">🟡 Yellow Rust</span>
+      <span class="dp dp-septoria">🟤 Septoria Blotch</span>
+      <span class="dp dp-mildew">⬜ Powdery Mildew</span>
+      <span class="dp dp-fusarium">🔴 Fusarium Blight</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="container">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-row">
+      <div class="step"><div class="step-num">1</div><h4>Upload Image</h4><p>Take a clear photo of your wheat leaf and upload it.</p></div>
+      <div class="step-arrow">→</div>
+      <div class="step"><div class="step-num">2</div><h4>AI Analysis</h4><p>Our model analyzes patterns, colors, and textures.</p></div>
+      <div class="step-arrow">→</div>
+      <div class="step"><div class="step-num">3</div><h4>Get Results</h4><p>Receive diagnosis with confidence score and explanation.</p></div>
+      <div class="step-arrow">→</div>
+      <div class="step"><div class="step-num">4</div><h4>Download Report</h4><p>Save a PDF report with treatment recommendations.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container cta-box">
+    <h2>Ready to protect your wheat crop?</h2>
+    <p>Join thousands of farmers using AI to detect diseases early.</p>
+    <a href="{{ url_for('signup') }}" class="btn-hero-primary"><i class="fas fa-rocket"></i> Start Free Now</a>
+  </div>
+</section>
+
+<footer class="landing-footer">
+  <p>🌾 WheatAI — Wheat Disease Detection System &copy; 2024</p>
+</footer>
+
+</body>
+</html>

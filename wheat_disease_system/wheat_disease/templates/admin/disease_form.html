@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if disease else 'Add' }} Disease — Admin — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-{{ 'edit' if disease else 'plus' }}"></i> {{ 'Edit' if disease else 'Add New' }} Disease</h1>
+    <p class="page-sub">{{ 'Update disease information' if disease else 'Add a new disease to the database' }}</p>
+  </div>
+  <a href="{{ url_for('admin_diseases') }}" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+<div class="form-page-layout">
+  <div class="form-card">
+    <form method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Disease Name *</label>
+          <input type="text" name="name" value="{{ disease.name if disease else '' }}" placeholder="e.g. Brown Rust" required/>
+        </div>
+        <div class="form-group">
+          <label>Code (unique identifier) *</label>
+          <input type="text" name="code" value="{{ disease.code if disease else '' }}" placeholder="e.g. brown_rust" {% if disease %}readonly{% endif %} required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Severity Level</label>
+        <select name="severity">
+          {% for s in ['None','Low','Medium','High','Very High'] %}
+          <option value="{{ s }}" {% if disease and disease.severity == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="2" placeholder="Brief overview of the disease...">{{ disease.description if disease else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Symptoms</label>
+        <textarea name="symptoms" rows="3" placeholder="Visual symptoms that help identify this disease...">{{ disease.symptoms if disease else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Treatment</label>
+        <textarea name="treatment" rows="3" placeholder="Recommended treatment steps and fungicides...">{{ disease.treatment if disease else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Prevention</label>
+        <textarea name="prevention" rows="3" placeholder="Prevention methods and best practices...">{{ disease.prevention if disease else '' }}</textarea>
+      </div>
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-save"></i> {{ 'Update Disease' if disease else 'Add Disease' }}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

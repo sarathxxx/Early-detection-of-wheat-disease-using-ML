@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}All Predictions — Admin — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1><i class="fas fa-chart-bar"></i> All Predictions</h1><p class="page-sub">{{ predictions|length }} total scans</p></div>
+</div>
+<div class="section-card">
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>#</th><th>User</th><th>Image</th><th>Disease</th><th>Confidence</th><th>Severity</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for p in predictions %}
+        <tr>
+          <td class="id-cell">{{ p.id }}</td>
+          <td><span class="user-tag">{{ p.uname or 'Unknown' }}</span></td>
+          <td><img src="{{ url_for('static', filename='uploads/'+p.image_path) }}" class="thumb" alt=""/></td>
+          <td><span class="disease-badge {{ p.disease }}">{{ p.disease.replace('_',' ').title() }}</span></td>
+          <td>
+            <div class="conf-bar"><div class="conf-fill" style="width:{{ (p.confidence*100)|round|int }}%"></div></div>
+            <span class="conf-pct">{{ "%.1f"|format(p.confidence*100) }}%</span>
+          </td>
+          <td><span class="severity-badge sev-{{ (p.severity or 'medium').lower().replace(' ','') }}">{{ p.severity or '—' }}</span></td>
+          <td class="date-cell">{{ p.created[:16] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

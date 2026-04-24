@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Detect Disease — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-microscope"></i> Disease Detection</h1>
+    <p class="page-sub">Upload a clear photo of your wheat leaf for instant analysis.</p>
+  </div>
+</div>
+
+<div class="detect-layout">
+  <div class="upload-card">
+    <form method="POST" enctype="multipart/form-data" id="upload-form">
+      <div class="drop-zone" id="drop-zone">
+        <div class="dz-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h3>Drop your image here</h3>
+        <p>or click to browse files</p>
+        <p class="dz-hint">Supports JPG, PNG, JPEG, WEBP (max 16MB)</p>
+        <input type="file" name="image" id="file-input" accept="image/*" required hidden/>
+        <button type="button" class="btn-browse" onclick="document.getElementById('file-input').click()">
+          <i class="fas fa-folder-open"></i> Browse Files
+        </button>
+      </div>
+
+      <div id="preview-section" class="preview-section" style="display:none">
+        <img id="preview-img" src="" alt="Preview"/>
+        <div class="preview-info">
+          <span id="preview-name"></span>
+          <button type="button" onclick="clearPreview()" class="btn-clear">× Remove</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit btn-detect" id="submit-btn" disabled>
+        <span class="btn-text"><i class="fas fa-search"></i> Analyze Image</span>
+        <span class="btn-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i> Analyzing...</span>
+      </button>
+    </form>
+  </div>
+
+  <div class="tips-panel">
+    <div class="tips-card">
+      <h3><i class="fas fa-lightbulb"></i> Photo Tips</h3>
+      <ul>
+        <li><i class="fas fa-check"></i> Use good natural lighting</li>
+        <li><i class="fas fa-check"></i> Focus on affected leaf area</li>
+        <li><i class="fas fa-check"></i> Avoid blurry images</li>
+        <li><i class="fas fa-check"></i> Include the full leaf if possible</li>
+        <li><i class="fas fa-check"></i> Avoid heavy shadows</li>
+      </ul>
+    </div>
+
+    <div class="tips-card">
+      <h3><i class="fas fa-disease"></i> Detectable Diseases</h3>
+      <div class="disease-list-preview">
+        <span class="dp dp-healthy">Healthy Wheat</span>
+        <span class="dp dp-rust">Brown Rust</span>
+        <span class="dp dp-yellow">Yellow Rust</span>
+        <span class="dp dp-septoria">Septoria Blotch</span>
+        <span class="dp dp-mildew">Powdery Mildew</span>
+        <span class="dp dp-fusarium">Fusarium Blight</span>
+      </div>
+    </div>
+
+    <div class="tips-card">
+      <h3><i class="fas fa-info-circle"></i> What You'll Get</h3>
+      <ul>
+        <li><i class="fas fa-star"></i> Disease name + confidence</li>
+        <li><i class="fas fa-star"></i> Severity level</li>
+        <li><i class="fas fa-star"></i> Symptom explanation</li>
+        <li><i class="fas fa-star"></i> Treatment guide</li>
+        <li><i class="fas fa-star"></i> Prevention tips</li>
+        <li><i class="fas fa-star"></i> Downloadable PDF report</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const previewSection = document.getElementById('preview-section');
+const previewImg = document.getElementById('preview-img');
+const previewName = document.getElementById('preview-name');
+const submitBtn = document.getElementById('submit-btn');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => { previewImg.src = e.target.result; };
+  reader.readAsDataURL(file);
+  previewName.textContent = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+  previewSection.style.display = 'flex';
+  submitBtn.disabled = false;
+  dropZone.style.display = 'none';
+}
+
+function clearPreview() {
+  fileInput.value = '';
+  previewSection.style.display = 'none';
+  submitBtn.disabled = true;
+  dropZone.style.display = 'flex';
+}
+
+document.getElementById('upload-form').addEventListener('submit', function() {
+  document.querySelector('.btn-text').style.display = 'none';
+  document.querySelector('.btn-loading').style.display = 'inline';
+  submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

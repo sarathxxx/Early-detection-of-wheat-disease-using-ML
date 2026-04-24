@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}History — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-history"></i> Detection History</h1>
+    <p class="page-sub">All your wheat disease scans</p>
+  </div>
+  <a href="{{ url_for('predict') }}" class="btn-primary"><i class="fas fa-plus"></i> New Detection</a>
+</div>
+
+{% if predictions %}
+<div class="section-card">
+  <div class="pred-table-wrap">
+    <table class="pred-table">
+      <thead>
+        <tr><th>#</th><th>Image</th><th>Disease</th><th>Confidence</th><th>Severity</th><th>Date</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for p in predictions %}
+        <tr>
+          <td class="id-cell">#{{ p.id }}</td>
+          <td><img src="{{ url_for('static', filename='uploads/'+p.image_path) }}" class="thumb" alt=""/></td>
+          <td><span class="disease-badge {{ p.disease }}">{{ p.disease.replace('_',' ').title() }}</span></td>
+          <td>
+            <div class="conf-bar">
+              <div class="conf-fill" style="width:{{ (p.confidence*100)|round|int }}%"></div>
+            </div>
+            <span class="conf-pct">{{ "%.1f"|format(p.confidence*100) }}%</span>
+          </td>
+          <td><span class="severity-badge sev-{{ (p.severity or 'medium').lower().replace(' ','') }}">{{ p.severity or '—' }}</span></td>
+          <td class="date-cell">{{ p.created[:16] }}</td>
+          <td>
+            <a href="{{ url_for('result', pred_id=p.id) }}" class="btn-sm btn-view"><i class="fas fa-eye"></i> View</a>
+            <a href="{{ url_for('download_report', pred_id=p.id) }}" class="btn-sm btn-dl"><i class="fas fa-download"></i> PDF</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">📋</div>
+  <h3>No predictions yet</h3>
+  <p>Your scan history will appear here.</p>
+  <a href="{{ url_for('predict') }}" class="btn-primary">Make First Detection</a>
+</div>
+{% endif %}
+{% endblock %}

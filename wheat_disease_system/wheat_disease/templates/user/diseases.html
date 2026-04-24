@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Disease Library — WheatAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-book-medical"></i> Disease Library</h1>
+    <p class="page-sub">Comprehensive guide to wheat diseases</p>
+  </div>
+</div>
+<div class="diseases-grid">
+  {% for d in diseases %}
+  <div class="disease-card">
+    <div class="dc-top">
+      <div class="dc-icon {{ d.code }}">
+        {% if d.code == 'healthy' %}🌿
+        {% elif d.code == 'brown_rust' %}🟠
+        {% elif d.code == 'yellow_rust' %}🟡
+        {% elif d.code == 'septoria' %}🟤
+        {% elif d.code == 'powdery_mildew' %}⬜
+        {% elif d.code == 'fusarium' %}🔴
+        {% else %}🌾{% endif %}
+      </div>
+      <div>
+        <h3>{{ d.name }}</h3>
+        <span class="severity-badge sev-{{ (d.severity or 'medium').lower().replace(' ','') }}">{{ d.severity }}</span>
+      </div>
+    </div>
+    {% if d.description %}<p class="dc-desc">{{ d.description }}</p>{% endif %}
+    <div class="dc-sections">
+      {% if d.symptoms %}
+      <details>
+        <summary><i class="fas fa-search"></i> Symptoms</summary>
+        <p>{{ d.symptoms }}</p>
+      </details>
+      {% endif %}
+      {% if d.treatment %}
+      <details>
+        <summary><i class="fas fa-medkit"></i> Treatment</summary>
+        <p>{{ d.treatment }}</p>
+      </details>
+      {% endif %}
+      {% if d.prevention %}
+      <details>
+        <summary><i class="fas fa-shield-alt"></i> Prevention</summary>
+        <p>{{ d.prevention }}</p>
+      </details>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
